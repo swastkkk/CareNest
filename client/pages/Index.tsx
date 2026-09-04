@@ -55,10 +55,13 @@ export default function Index() {
 
   useEffect(() => {
     fetch("/api/carenest/dashboard")
-      .then((response) => response.json() as Promise<DashboardResponse>)
+      .then(async (response) => {
+        if (!response.ok) throw new Error("Could not load the dashboard");
+        return response.json() as Promise<DashboardResponse>;
+      })
       .then((data) => {
-        setRoutines(data.routines);
-        setStreak(data.streak);
+        setRoutines(Array.isArray(data.routines) ? data.routines : []);
+        setStreak(typeof data.streak === "number" ? data.streak : 5);
       })
       .catch(() => undefined);
   }, []);

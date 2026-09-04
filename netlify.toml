@@ -9,7 +9,8 @@ publish = "dist/spa"
 NODE_VERSION = "22.14.0"
 
 [functions]
-external_node_modules = ["express"]
+# Bundle Express with the function. Marking it external leaves the deployed
+# function without the module and causes Runtime.ImportModuleError (HTTP 502).
 node_bundler = "esbuild"
 
 [[redirects]]
