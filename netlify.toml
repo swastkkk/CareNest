@@ -1,14 +1,26 @@
 [build]
-command = "npm run build:client"
+command = "pnpm run build:client"
 functions = "netlify/functions"
 publish = "dist/spa"
 
+[build.environment]
+# Vite 8 requires Node 20.19+ or 22.12+.  Pin a compatible version so the
+# Netlify build does not fall back to an older default runtime.
+NODE_VERSION = "22.14.0"
 
 [functions]
 external_node_modules = ["express"]
 node_bundler = "esbuild"
+
 [[redirects]]
 force = true
 from = "/api/*"
 status = 200
 to = "/.netlify/functions/api/:splat"
+
+# React Router handles client-side routes. Without this, visiting or
+# refreshing any route other than / returns Netlify's static 404 page.
+[[redirects]]
+from = "/*"
+status = 200
+to = "/index.html"
